@@ -1,3 +1,4 @@
+package maquina;
 public class SistemaPago {
     private double dineroIngresado;
     

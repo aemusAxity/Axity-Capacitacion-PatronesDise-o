@@ -1,5 +1,9 @@
+package maquina;
 import java.util.ArrayList;
 import java.util.List;
+
+import maquina.PatronObserver.*;
+import maquina.PatronState.*;
 
 public class MaquinaExpendedora {
     private Inventario inventario;

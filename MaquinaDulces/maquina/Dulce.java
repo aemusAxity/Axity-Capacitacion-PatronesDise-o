@@ -1,3 +1,4 @@
+package maquina;
 public class Dulce {
     private String codigo;
     private String nombre;
