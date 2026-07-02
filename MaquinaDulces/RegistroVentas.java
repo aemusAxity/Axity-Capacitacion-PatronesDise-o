@@ -1,7 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class RegistroVentas {
+// 1. Implementa la inferfaz ObservadorVenta
+public class RegistroVentas implements ObservadorVenta {
     private List<Venta> ventas;
     private double totalRecaudado;
 
@@ -10,7 +11,15 @@ public class RegistroVentas {
         this.totalRecaudado = 0.0;
     }
 
-    public void registrarVenta(Dulce dulce) {
+    // 2. Método obligatorio del contrato
+    @Override
+    public void onVentaRealizada(Dulce dulce) {
+        // Reutilizando método original
+        this.registrarVenta(dulce);
+    }
+
+    // 3. Cambio de public a private
+    private void registrarVenta(Dulce dulce) {
         Venta venta = new Venta(dulce.getCodigo(), dulce.getNombre(), dulce.getPrecio());
         ventas.add(venta);
         totalRecaudado += dulce.getPrecio();

@@ -1,12 +1,34 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class MaquinaExpendedora {
     private Inventario inventario;
     private SistemaPago sistemaPago;
     private RegistroVentas registroVentas;
+    
+    // 1. Crea la lista de suscriptores (observadores)
+    private List<ObservadorVenta> observadores;
 
     public MaquinaExpendedora() {
         this.inventario = new Inventario();
         this.sistemaPago = new SistemaPago();
         this.registroVentas = new RegistroVentas();
+
+        // 2. Inicializamos la lista y suscribimos al registro de ventas
+        this.observadores = new ArrayList<>();
+        this.agregarObservador(this.registroVentas);
+    }
+
+    // 3. Método para que cualquiera pueda suscribirse
+    public void agregarObservador(ObservadorVenta observador) {
+        observadores.add(observador);
+    }
+
+    // 4. Método privado que "grita" a todos los suscriptores
+    private void notificarVenta(Dulce dulce) {
+        for (ObservadorVenta obs : observadores) {
+            obs.onVentaRealizada(dulce); // Se ejecuta el método del Paso 2
+        }
     }
 
     public void mostrarDulcesDisponibles() {
@@ -42,10 +64,13 @@ public class MaquinaExpendedora {
             return false;
         }
 
-        // Procesar compra
+       // Procesar compra
         sistemaPago.procesarPago(dulce.getPrecio());
         dulce.vender();
-        registroVentas.registrarVenta(dulce);
+        
+        // 5. EL CAMBIO FINAL: Quitamos "registroVentas.registrarVenta(dulce);"
+        // Y en su lugar, simplemente notificamos:
+        notificarVenta(dulce);
 
         // Calcular cambio
         double cambio = sistemaPago.getDineroIngresado();
