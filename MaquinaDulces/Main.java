@@ -52,55 +52,43 @@ public class Main {
         System.out.println("------------------------------------------");
     }
     
-    private static void comprarDulce(MaquinaExpendedora maquina) {
-        maquina.mostrarDulcesDisponibles();
-        
-        System.out.print("\nIngresa el codigo del producto: ");
-        String codigo = scanner.nextLine().trim().toUpperCase();
-        
-        // VALIDACIÓN DEL CÓDIGO ANTES DE INICIAR EL PAGO
-        if (!maquina.validarCodigo(codigo)) {
-            System.out.println("Codigo invalido. Producto no encontrado.");
-            return;
-        }
-        
-        System.out.println("\n--- SISTEMA DE PAGO ---");
-        maquina.mostrarDenominacionesAceptadas();
-        
-        boolean continuarPago = true;
-        
-        while (continuarPago) {
-            System.out.println("\n1. Ingresar moneda/billete");
-            System.out.println("2. Confirmar compra");
-            System.out.println("3. Cancelar");
+        private static void comprarDulce(MaquinaExpendedora maquina) {
+            maquina.mostrarDulcesDisponibles();
             
-            int opcion = leerOpcion("Opcion: ", 1, 3);
+            System.out.print("\nIngresa el codigo del producto: ");
+            String codigo = scanner.nextLine().trim().toUpperCase();
             
-            switch (opcion) {
-                case 1:
-                    double cantidad = leerDouble("Ingresa la denominacion (ej: 0.25, 1, 5, 10): $");
-                    maquina.ingresarDinero(cantidad);
-                    break;
-                case 2:
-                    if (maquina.comprarDulce(codigo)) {
-                        continuarPago = false;
-                    } else {
-                        System.out.print("\nDeseas seguir intentando? (S/N): ");
-                        String respuesta = scanner.nextLine().trim().toUpperCase();
-                        if (!respuesta.equals("S")) {
+            // Le pasamos la bolita a la máquina (y su Estado Actual resolverá)
+            maquina.seleccionarProducto(codigo);
+            
+            // Si el estado cambió a "Esperando Dinero", iniciamos el menú de pago
+            if (maquina.estaEsperandoDinero()) {
+                System.out.println("\n--- SISTEMA DE PAGO ---");
+                maquina.mostrarDenominacionesAceptadas();
+                
+                // El bucle se mantiene vivo solo mientras estemos en este estado
+                while (maquina.estaEsperandoDinero()) {
+                    System.out.println("\n1. Ingresar moneda/billete");
+                    System.out.println("2. Confirmar compra");
+                    System.out.println("3. Cancelar");
+                    
+                    int opcion = leerOpcion("Opcion: ", 1, 3);
+                    
+                    switch (opcion) {
+                        case 1:
+                            double cantidad = leerDouble("Ingresa la denominacion (ej: 0.25, 1, 5, 10): $");
+                            maquina.ingresarDinero(cantidad);
+                            break;
+                        case 2:
+                            maquina.confirmarCompra();
+                            break;
+                        case 3:
                             maquina.cancelarTransaccion();
-                            continuarPago = false;
-                        }
+                            break;
                     }
-                    break;
-                case 3:
-                    maquina.cancelarTransaccion();
-                    System.out.println("Compra cancelada.");
-                    continuarPago = false;
-                    break;
+                }
             }
         }
-    }
     
     private static void menuAdministrador(MaquinaExpendedora maquina) {
         System.out.print("\nIngresa la clave de administrador: ");
