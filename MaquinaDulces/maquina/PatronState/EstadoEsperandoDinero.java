@@ -1,3 +1,9 @@
+package maquina.PatronState;
+import maquina.Dulce;
+import maquina.MaquinaExpendedora;
+import maquina.SistemaPago;
+
+
 public class EstadoEsperandoDinero implements EstadoMaquina {
     private MaquinaExpendedora maquina;
 

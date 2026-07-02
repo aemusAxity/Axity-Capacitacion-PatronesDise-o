@@ -1,5 +1,10 @@
+package maquina.PatronObserver; 
+
 import java.util.ArrayList;
 import java.util.List;
+
+import maquina.Dulce;
+import maquina.Inventario;
 
 // 1. Implementa la inferfaz ObservadorVenta
 public class RegistroVentas implements ObservadorVenta {
